@@ -1,0 +1,19 @@
+{
+    "3645348169065364":{
+        "GroupName": "报警任务提醒",
+        "GroupId": "3645348169065364",
+        "Disable":false,
+        "BotIds":[
+            {"botId":717538307160,"enable":true,"disablePrompts":true},
+            {"botId":10150836046836,"enable":true,"disablePrompts":true}
+        ]
+    },
+    "3686109232764368": {
+        "GroupName": "丁叮咣铛",
+        "GroupId": "3686109232764368",
+        "Disable":false,
+        "BotIds":[
+            {"botId":10418867443768,"enable":true,"disablePrompts":true}
+        ]
+    }
+}
