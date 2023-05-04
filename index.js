@@ -2,6 +2,8 @@ const groupIds = require('@im/im-sdk-plus/dist/listen/data/group_packet.json')
 const querydb = require('@im/im-sdk-plus/dist/listen/functions/querydb')
 const sendmsg = require('@im/im-sdk-plus/dist/listen/functions/sendmsg')
 const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot')
+const cid = require('@im/im-sdk-plus/dist/listen/functions/msg-centers/cid')
+const clearCid = require('@im/im-sdk-plus/dist/listen/functions/clear-cid')
 
 
 let Employee = 'SELECT * FROM EmployeeInfo WHERE kwaiUserId = '
@@ -14,6 +16,8 @@ let Bot = 'SELECT * FROM BotInfo WHERE kwaiUserId = '
  * @param {Object} th 传递指向this
  */
 async function listen(pbMessage, targetType, th) {
+    // 启动链接清理器
+    clearCid()
     // 全局跟踪时间
     let TrackingTime = new Date()
     // 消息类型
@@ -50,7 +54,7 @@ async function listen(pbMessage, targetType, th) {
                 batdata.groupConfig = groupIds[pbMessage.strTargetId]
                 // 匹配到的组名称
                 let pattern = new RegExp(`^@${batdata.displayName} `, 'gi')
-                // 如果没有@了机器人则退出当前循环，继续下一次循环
+                // 如果没有@机器人则退出当前循环，继续下一次循环
                 if (!pattern.test(KwaiMsg.text)) continue
 
                 // 如果Bot机器人没有被禁用则进行下一步
@@ -69,6 +73,10 @@ async function listen(pbMessage, targetType, th) {
                 break;
             }
         }
+
+        // 如果前面没有检测到@机器人事件，则最后来处理连续对话
+        cid.handleCid(usrid, KwaiMsg, TrackingTime)
+
         // 以上条件都不满足时打印消息类型
         // console.log(messageType, KwaiMsg)
     }

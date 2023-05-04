@@ -28,7 +28,7 @@ function readWrite(botdata, senduid, sendmsg, role = "user") {
         role: role,
         content: sendmsg
     })
-    // 写入文件中记录当前聊天记录的数据大小，以便以后再次读取用户聊
+    // 写入文件中记录当前聊天记录的数据大小，以便以后再次读取用户聊天数据
     fs.writeFileSync(filePath, JSON.stringify(chatdata))
     // 返回当前用户的消息合集
     return chatdata[groupid][botuid][userid]

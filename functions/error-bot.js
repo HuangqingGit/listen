@@ -5,12 +5,13 @@ const timediff = require('@im/im-sdk-plus/dist/listen/functions/time-diff');
  * 推送错误信息给Bot
  * @param {Object} webhook // 发送到webhook地址? 这个地址必须是一个Bot对象
  * @param {String} message // 发送给谁的webhook的消息内容? 这个消息内容必须是String，支持Markdown语法格式
- * @param {String} username // 是谁发送的消息，用户邮箱前缀
- * @param {String} IntTime // 信息跟踪信息，包含了请求时长，响应时长，支持Markdown语法格式
+ * @param {String|Object} username // 是谁发送的消息，用户邮箱前缀
+ * @param {[String]} TraTime // 信息跟踪信息，包含了请求时长，响应时长，支持Markdown语法格式
  */
-function sendErrorMessage(webhook, message, username, IntTime) {
+function sendErrorMessage(webhook, message, username, TraTime = false) {
     webhook = typeof (webhook.webhook) != 'object' ? JSON.parse(decodeURIComponent(webhook.webhook)) : webhook.webhook
-    let tar = `<font size='2' color='#CDD0D6'>(本次交互耗时 ${timediff(IntTime)} ) Source: Kim-listen-In</font>`
+    // TraTime为false时，默认为空
+    let tar = TraTime ? `<font size='2' color='#CDD0D6'>(本次交互耗时 ${timediff(TraTime)} ) Source: Kim-listen-In</font>` : ""
     axios.post(webhook.url, {
             "msgtype": "markdown",
             "markdown": {
@@ -30,6 +31,8 @@ function sendErrorMessage(webhook, message, username, IntTime) {
  * @returns 
  */
 function objectToMarkdown(obj) {
+    // 如果传递的参数不是对象则直接返回传递结果
+    if (typeof obj !== "object") return obj
     let output = '-----------**服务响应异常请稍后再试**-----------\n\n'
     output = output + '```json\n{\n';
 
@@ -49,7 +52,7 @@ function objectToMarkdown(obj) {
         });
         output += '    }\n';
     });
-    
+
     output += '}\n```';
     // 从输出中删除空值
     output = output.replace(/"{}/g, '{}');
