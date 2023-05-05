@@ -7,6 +7,7 @@ const chatPath = require('os').homedir() + '\\Documents\\chatGPT';
 
 // 连续对话
 let openCID = /^(开始|开启|打开|停止|结束|关闭)?( )*(连续|持续)?对话( )*(模式)?$/i
+let a = ""
 
 
 /**
