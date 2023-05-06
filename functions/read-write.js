@@ -4,6 +4,18 @@ const path = require('path');
 // 创建聊天文件路径
 const documentsPath = require('os').homedir() + '\\Documents';
 const filePath = path.join(documentsPath, 'chat-data.json');
+// 判断文件是否存在，不存在则创建文件
+if (!fs.existsSync(filePath)) {
+    const directoryPath = path.dirname(filePath);
+    if (!fs.existsSync(directoryPath)) {
+        fs.mkdirSync(directoryPath, {
+            recursive: true
+        });
+    }
+    // 写入基础数据
+    fs.writeFileSync(filePath, JSON.stringify({}));
+}
+
 // 创建一个数据缓存对象
 let chatdata = require(filePath)
 

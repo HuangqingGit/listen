@@ -1,11 +1,4 @@
-const axios = require('axios');
-const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot')
-const readwrite = require('@im/im-sdk-plus/dist/listen/functions/read-write')
 const msgcenter = require('@im/im-sdk-plus/dist/listen/functions/msg-center')
-
-// 设置axios的默认host
-axios.defaults.baseURL = 'https://chat.kuckji.cn';
-
 
 /**
  * 发送消息给数据预处理服务器

@@ -1,5 +1,6 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('C:/Users/cd-huangqing/AppData/Roaming/Kim/localData/databases/684276754383/users.db').serialize();
+const sqlite3 = require('sqlite3').verbose();   // 数据库读取模块
+const loginUserRootPath = require('os').homedir()   // 获取登录用户根目录
+const db = new sqlite3.Database(`${loginUserRootPath}\\AppData\\Roaming\\Kim\\localData\\databases\\684276754383\\users.db`).serialize();   // 获取db对象
 
 /**
  * 封装一个DB数据查询函数

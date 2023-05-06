@@ -4,6 +4,8 @@ const axios = require('axios');
 const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot');
 // 连续对话聊天储存根目录
 const chatPath = require('os').homedir() + '\\Documents\\chatGPT';
+// 设置axios的默认host
+axios.defaults.baseURL = 'https://chat.kuckji.cn';
 
 /**
  * CID 连续对话消息分发模块
