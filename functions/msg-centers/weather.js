@@ -178,7 +178,6 @@ function semantic(weaMsg) {
             year ? ta.setFullYear(Number(year)) : ""
             moon ? ta.setMonth(Number(moon - 1)) : ""
             ta.setDate(Number(days))
-            console.log(ta.getTime())
 
             // 计算差值
             curday = getDaysBetweenDates(ta.getTime(), new Date().getTime())
