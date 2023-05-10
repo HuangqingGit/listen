@@ -8,6 +8,69 @@ const chatPath = require('os').homedir() + '\\Documents\\chatGPT';
 axios.defaults.baseURL = 'https://chat.kuckji.cn';
 
 /**
+ * Create 创建对话方法
+ * @param {Object} usrid 用户信息
+ * @param {Object} curBot 机器人信息
+ * @param {String} msg 消息内容
+ * @param {Object|String} TraTime 全局跟踪时间
+ */
+function create(usrid, curBot, msg, TraTime) {
+    // 唯一时间戳
+    let date = Date.now()
+    // 存储路径
+    let filePath = path.join(chatPath, `${usrid.username}\\group-${curBot.groupConfig.GroupId}\\bot-${curBot.kwaiUserId}`);
+    // 连续对话配置路径
+    let cidPath = path.join(chatPath, `${usrid.username}\\group-${curBot.groupConfig.GroupId}`);
+    // 文件名称
+    let fileName = `chat-${date}.json`
+
+    // 停止连续对话
+    if (/^(停止|结束|关闭)( )*/.test(msg)) {
+        // 删除对话记录
+        fs.unlink(`${cidPath}\\config.json`, (err) => {
+            if (err) {
+                // 发送通知
+                errorbot(curBot, "连续对话结束异常,请稍后再试或连续管理员处理!", usrid.username, TraTime)
+            } else {
+                // 发送通知
+                errorbot(curBot, "已结束连续对话!", usrid.username, TraTime)
+            }
+        })
+    }
+    // 新建连续对话
+    else {
+        // 当前用户在当前这个群已经有对应激活状态的对话机器人，则取消创建新的对话并给出提醒
+        if (fs.existsSync(`${cidPath}\\config.json`)) {
+            errorbot(curBot, "当前已存在激活的对话记录，如要使用新的对话，请结束当前对话后重试！", usrid.username, TraTime)
+            return false
+        }
+        // 效验路径并创建文件
+        createIfNotExists(`${filePath}\\${fileName}`, {
+            // 配置基础信息
+            CreateTime: date, // 创建时间
+            CreateUser: usrid.username, // 创建者Name
+            CreateBot: curBot, // 关联的Bot对象
+            UpdateTime: date, // 最近更新时间
+            ChatDatas: [] // 聊天数据对象
+        })
+        // 写入配置文件
+        createIfNotExists(`${filePath}\\config.json`, [{
+            createTime: date,
+            createPath: `${filePath}\\${fileName}`
+        }])
+        // 写入当前连续对话配置
+        createIfNotExists(`${cidPath}\\config.json`, {
+            createTime: date,
+            createPath: `${filePath}\\${fileName}`
+        }, true)
+
+        // 发送已开启连续对话通知
+        errorbot(curBot, "连续对话模式已开启，您可以在不 @我 的情况下与我进行连续对话/问答！\n\n 退出连续对话模式请发送：结束对话", usrid.username, TraTime)
+    }
+}
+
+
+/**
  * CID 连续对话消息分发模块
  * @param {Object} usrid 用户信息
  * @param {Object} KwaiMsg 消息报文
@@ -84,68 +147,6 @@ function handle(usrid, KwaiMsg, TraTime) {
                 errorbot(curBot, err, usrid.username, TraTime)
             })
 
-    }
-}
-
-/**
- * Create 创建对话方法
- * @param {Object} usrid 用户信息
- * @param {Object} curBot 机器人信息
- * @param {String} msg 消息内容
- * @param {Object|String} TraTime 全局跟踪时间
- */
-function create(usrid, curBot, msg, TraTime) {
-    // 唯一时间戳
-    let date = Date.now()
-    // 存储路径
-    let filePath = path.join(chatPath, `${usrid.username}\\group-${curBot.groupConfig.GroupId}\\bot-${curBot.kwaiUserId}`);
-    // 连续对话配置路径
-    let cidPath = path.join(chatPath, `${usrid.username}\\group-${curBot.groupConfig.GroupId}`);
-    // 文件名称
-    let fileName = `chat-${date}.json`
-
-    // 停止连续对话
-    if (/^(停止|结束|关闭)( )*/.test(msg)) {
-        // 删除对话记录
-        fs.unlink(`${cidPath}\\config.json`, (err) => {
-            if (err) {
-                // 发送通知
-                errorbot(curBot, "连续对话结束异常,请稍后再试或连续管理员处理!", usrid.username, TraTime)
-            } else {
-                // 发送通知
-                errorbot(curBot, "已结束连续对话!", usrid.username, TraTime)
-            }
-        })
-    }
-    // 新建连续对话
-    else {
-        // 当前用户在当前这个群已经有对应激活状态的对话机器人，则取消创建新的对话并给出提醒
-        if (fs.existsSync(`${cidPath}\\config.json`)) {
-            errorbot(curBot, "当前已存在激活的对话记录，如要使用新的对话，请结束当前对话后重试！", usrid.username, TraTime)
-            return false
-        }
-        // 效验路径并创建文件
-        createIfNotExists(`${filePath}\\${fileName}`, {
-            // 配置基础信息
-            CreateTime: date, // 创建时间
-            CreateUser: usrid.username, // 创建者Name
-            CreateBot: curBot, // 关联的Bot对象
-            UpdateTime: date, // 最近更新时间
-            ChatDatas: [] // 聊天数据对象
-        })
-        // 写入配置文件
-        createIfNotExists(`${filePath}\\config.json`, [{
-            createTime: date,
-            createPath: `${filePath}\\${fileName}`
-        }])
-        // 写入当前连续对话配置
-        createIfNotExists(`${cidPath}\\config.json`, {
-            createTime: date,
-            createPath: `${filePath}\\${fileName}`
-        }, true)
-
-        // 发送已开启连续对话通知
-        errorbot(curBot, "连续对话模式已开启，您可以在不 @我 的情况下与我进行连续对话/问答！\n\n 退出连续对话模式请发送：结束对话", usrid.username, TraTime)
     }
 }
 

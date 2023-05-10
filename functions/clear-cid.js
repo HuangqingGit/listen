@@ -8,6 +8,8 @@ let time
  * @param {String} rootDir 目录地址Path
  */
 function deleteFile(rootDir) {
+    // 判断当前的路径是否存在如果不存在则直接退出
+    if (!fs.existsSync(rootDir)) return
     // 获取当前目录下的所有文件和文件夹
     const files = fs.readdirSync(rootDir);
     files.forEach(file => {
@@ -56,7 +58,7 @@ function clearCid() {
         // 每30秒检查一次配置文件
         tiem = setInterval(() => {
             deleteFile(require('os').homedir() + '\\Documents\\chatGPT')
-        }, 1000 * 30)
+        }, 1000 * 10)
     }
 
 }
