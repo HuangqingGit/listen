@@ -1,9 +1,6 @@
 const cid = require('@im/im-sdk-plus/dist/listen/functions/msg-centers/cid')
 const weather = require('@im/im-sdk-plus/dist/listen/functions/msg-centers/weather')
 
-// 连续对话聊天储存根目录
-const chatPath = require('os').homedir() + '\\Documents\\chatGPT';
-
 /*正则表达式配置*/
 
 let openCID = /^(开始|开启|打开|停止|结束|关闭)?( )*(连续|持续)?对话( )*(模式)?$/i // GPT连续对话
