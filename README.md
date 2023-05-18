@@ -15,3 +15,5 @@
     listen(pbMessage, targetType, this)
   ```
   三个参数缺一不可，需要带上this指向
+  
+  ## 注意：首次配置完成后，需要用管理员身份运行Kim，否则将无法运行
