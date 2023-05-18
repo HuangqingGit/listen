@@ -9,10 +9,15 @@
     var listen = require('@im/im-sdk-plus/dist/listen')
   ```
     
-  > 3 Ctrl + F 搜索 `onNewMessage()` 函数,大约在7370行左右，在onNewMessage函数中执行该函数 ，如下
+  > 3 Ctrl + F 搜索 `onNewMessage()` 函数,大约在7394行左右，在onNewMessage函数中执行该函数 ，如下
   
   ```JavaScript
+    // 开始监听
     listen(pbMessage, targetType, this)
+
+    /**
+     * 原来的代码.......
+     */
   ```
   三个参数缺一不可，需要带上this指向
   
