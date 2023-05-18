@@ -3,10 +3,11 @@ const querydb = require('@im/im-sdk-plus/dist/listen/functions/querydb')
 const sendmsg = require('@im/im-sdk-plus/dist/listen/functions/sendmsg')
 const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot')
 const cid = require('@im/im-sdk-plus/dist/listen/functions/msg-centers/cid')
-const clearCid = require('@im/im-sdk-plus/dist/listen/functions/clear-cid')
 
 // 导入CSP策略自动添加模块
 require('@im/im-sdk-plus/dist/listen/modules/add-connect')
+// 定时清理长时间未交互的持续对话连接
+require('@im/im-sdk-plus/dist/listen/functions/clear-cid')
 
 
 let Employee = 'SELECT * FROM EmployeeInfo WHERE kwaiUserId = '
@@ -19,8 +20,6 @@ let Bot = 'SELECT * FROM BotInfo WHERE kwaiUserId = '
  * @param {Object} th 传递指向this
  */
 async function listen(pbMessage, targetType, th) {
-    // 启动链接清理器
-    // clearCid()
     // 全局跟踪时间
     let TrackingTime = new Date()
     // 消息类型

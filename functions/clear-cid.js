@@ -53,14 +53,13 @@ function deleteFile(rootDir) {
  * 定时清理长时间未交互的持续对话连接
  */
 function clearCid() {
-    // 如果定时器不存在就启动定时器
-    if (!time) {
-        // 每30秒检查一次配置文件
-        tiem = setInterval(() => {
-            deleteFile(require('os').homedir() + '\\Documents\\chatGPT')
-        }, 1000 * 10)
-    }
-
+    // 每30秒检查一次配置文件
+    tiem = setInterval(() => {
+        deleteFile(require('os').homedir() + '\\Documents\\chatGPT')
+        console.log(1)
+    }, 1000 * 5)
 }
 
 module.exports = clearCid;
+
+clearCid()

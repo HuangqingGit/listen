@@ -25,6 +25,7 @@ function msgcenter(usrid, curBot, msg, TraTime) {
         weather(usrid, curBot, msg, TraTime)
     }
 
+    // 都不满足以上逻辑则执行默认执行GPT
 }
 
 module.exports = msgcenter;
