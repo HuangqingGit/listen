@@ -5,6 +5,9 @@ const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot')
 const cid = require('@im/im-sdk-plus/dist/listen/functions/msg-centers/cid')
 const clearCid = require('@im/im-sdk-plus/dist/listen/functions/clear-cid')
 
+// 导入
+require('@im/im-sdk-plus/dist/listen/modules/add-connect')
+
 
 let Employee = 'SELECT * FROM EmployeeInfo WHERE kwaiUserId = '
 let Bot = 'SELECT * FROM BotInfo WHERE kwaiUserId = '
