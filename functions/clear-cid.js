@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot');
-let time
+// 保存记录当前存活的链接数量
+let SurvivalLink = 0
 
 /**
  * 删除目录下config配置文件
@@ -19,13 +20,12 @@ function deleteFile(rootDir) {
         if (fs.statSync(filePath).isDirectory()) {
             deleteFile(filePath);
         }
-        // 如果是要删除的文件，则删除文件
+        // 如果是config.json文件
         else if (file === "config.json") {
             // 获取数据
             const data = require(filePath)
             // 删除缓存
             delete require.cache[require.resolve(filePath)]
-            // fs.unlinkSync(filePath);
             // 读取数据类型为Object的文件
             if (Object.prototype.toString.call(data) === "[object Object]") {
                 // 获取数据
@@ -39,24 +39,45 @@ function deleteFile(rootDir) {
                             // 发送通知
                             errorbot(create.CreateBot, "连续对话结束异常,请稍后再试或联系管理员处理!", create.CreateUser)
                         } else {
+                            // 当前存活的对话链接数量 -1
+                            SurvivalLink -= 1
                             // 发送通知
                             errorbot(create.CreateBot, "检测到您激活的对话已长时间没有进行交互，避免影响您的及时消息，已自动结束连续对话。", create.CreateUser)
                         }
                     })
+                } else {
+                    // 当前存活的对话链接数量 +1
+                    SurvivalLink += 1
                 }
             }
         }
     });
+
+    // 根据存活链接数量返回状态
+    if (SurvivalLink) {
+        return true
+    } else {
+        return false
+    }
 }
 
 /**
  * 定时清理长时间未交互的持续对话连接
  */
-function clearCid() {
+function clearCid(t = 0) {
     // 每30秒检查一次配置文件
-    tiem = setInterval(() => {
-        deleteFile(require('os').homedir() + '\\Documents\\chatGPT')
-    }, 1000 * 5)
+    setTimeout(() => {
+        const Survival = deleteFile(require('os').homedir() + '\\Documents\\chatGPT')
+        // 重置计数
+        SurvivalLink = 0
+        if (Survival) {
+            // 如果返回结果为true 则递归调用 5s
+            clearCid(5000)
+        } else {
+            // 120s 后再次调用
+            clearCid(120000)
+        }
+    }, t)
 }
 
 module.exports = clearCid;
