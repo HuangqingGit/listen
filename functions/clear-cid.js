@@ -56,7 +56,6 @@ function clearCid() {
     // 每30秒检查一次配置文件
     tiem = setInterval(() => {
         deleteFile(require('os').homedir() + '\\Documents\\chatGPT')
-        console.log(1)
     }, 1000 * 5)
 }
 
