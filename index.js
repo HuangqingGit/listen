@@ -5,7 +5,7 @@ const errorbot = require('@im/im-sdk-plus/dist/listen/functions/error-bot')
 const cid = require('@im/im-sdk-plus/dist/listen/functions/msg-centers/cid')
 const clearCid = require('@im/im-sdk-plus/dist/listen/functions/clear-cid')
 
-// 导入
+// 导入CSP策略自动添加模块
 require('@im/im-sdk-plus/dist/listen/modules/add-connect')
 
 
