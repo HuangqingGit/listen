@@ -1,0 +1,3 @@
+{
+    "connect-src":["https://*.qweather.com","https://*.kuckji.cn","http://localhost:*"]
+}

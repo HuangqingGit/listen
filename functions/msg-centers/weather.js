@@ -61,6 +61,7 @@ areas.map(S_F => {
  * @param {Object|String} TraTime 全局跟踪时间
  */
 function weather(usrid, curBot, msg, TraTime) {
+    // 解析语义
     let datas = semantic(msg)
     if (datas === 0) {
         // 当查询时间小于当前时间时执行的动作
@@ -98,7 +99,7 @@ function weather(usrid, curBot, msg, TraTime) {
                         if (tdata.code === "200") {
                             // 成功则发送给用户
                             if (url == "now") {
-                                send1(usrid, curBot, tdata, iext_name, datas.date, TraTime)
+                                send1(usrid, curBot, tdata, iext_name, TraTime)
                             } else {
                                 send2(usrid, curBot, tdata, iext_name, datas.date, datas.curday, TraTime)
                             }
@@ -215,29 +216,28 @@ function semantic(weaMsg) {
  * @param {Object} usrid 用户信息
  * @param {Object} curBot 机器人信息
  * @param {Object} wedata 天气数据
- * @param {String} title 天气数据
- * @param {String} date 天气数据
+ * @param {String} title 城市标题
  * @param {Object|String} TraTime 全局跟踪时间
  */
-function send1(usrid, curBot, wedata, title, date, TraTime) {
+function send1(usrid, curBot, wedata, title, TraTime) {
     let now = wedata.now
     // TraTime为false时，默认为空
     let tar = TraTime ? `<font size='2' color='#CDD0D6'>(本次交互耗时 ${timediff(TraTime)} ) Source: 和风天气</font>` : ""
-    let msg = `## ${title}${date}天气情况如下\n\n` +
-        `**观测温度：** ${now.temp}℃\n` +
-        `**体感温度：** ${now.feelsLike}℃\n` +
-        `**观测时间：** ${formatTimestamp(new Date("2023-05-10T16:14+08:00").getTime(),"yyyy年MM月dd日 HH:mm:ss")}\n` +
-        `**天气描述：** ${now.text}\n` +
+    let msg = `## 当前${title}实时天气如下\n\n` +
+        `**天气：** ${now.text}\n` +
         `**风速：** ${now.windSpeed}km/h\n` +
         `**风向：** ${now.windDir}\n` +
-        `**风向角度：** ${now.wind360}°\n` +
-        `**风力等级：** ${now.windScale}级\n` +
-        `**相对湿度：** ${now.humidity}%\n` +
-        `**大气压强：** ${now.pressure} hPa\n` +
+        `**角度：** ${now.wind360}°\n` +
+        `**风力：** ${now.windScale}级\n` +
+        `**湿度：** ${now.humidity}%\n` +
+        `**压强：** ${now.pressure} hPa\n` +
+        `**云量：** ${now.cloud }%\n` +
         `**降水量：** ${now.precip} mm\n` +
         `**能见度：** ${now.vis}/km\n` +
-        `**云量：** ${now.cloud }%\n` +
-        `**露点温度：** ${now.dew}℃\n\n` +
+        `**观测温度：** ${now.temp}℃\n` +
+        `**体感温度：** ${now.feelsLike}℃\n` +
+        `**露点温度：** ${now.dew}℃\n` +
+        `**观测时间：** ${formatTimestamp(new Date(now.obsTime).getTime(),"yyyy年MM月dd日 HH:mm")}\n\n` +
         `### **[查看详情](${wedata.fxLink})**`
 
 
@@ -260,32 +260,28 @@ function send1(usrid, curBot, wedata, title, date, TraTime) {
  * @param {Object} usrid 用户信息
  * @param {Object} curBot 机器人信息
  * @param {Object} wedata 天气数据
- * @param {String} title 天气数据
- * @param {String} date 天气数据
- * @param {String} pointer 天气数据
+ * @param {String} title 城市标题
+ * @param {String} date 时间名称
+ * @param {String} pointer 数据指针
  * @param {Object|String} TraTime 全局跟踪时间
  */
 function send2(usrid, curBot, wedata, title, date, pointer, TraTime) {
-    console.log(pointer)
     let daily = wedata.daily[pointer]
     // TraTime为false时，默认为空
     let tar = TraTime ? `<font size='2' color='#CDD0D6'>(本次交互耗时 ${timediff(TraTime)} ) Source: 和风天气</font>` : ""
     let msg = `## ${title}${date}天气情况如下\n` +
-        `**预报日期：** ${formatTimestamp(new Date(daily.fxDate).getTime(),"yyyy年MM月dd日 HH:mm:ss")}\n` +
-        `**最高温度：** ${daily.tempMax}℃\n` +
-        `**最低温度：** ${daily.tempMin}℃\n` +
-        `**月相名称：** ${daily.moonPhase}\n` +
-        `**百天风速：** ${daily.windSpeedDay}km/h\n` +
-        `**夜间风速：** ${daily.windSpeedNight}km/h\n` +
-        `**风力等级：** ${daily.wind360Day}级\n` +
-        `**相对湿度：** ${daily.humidity}%\n` +
-        `**大气压强：** ${daily.pressure} hPa\n` +
-        `**紫外线：** ${daily.uvIndex}nm\n` +
-        `**降水量：** ${daily.precip} mm\n` +
+        `**云量：** ${daily.cloud }%\n` +
+        `**温度：** ${daily.tempMin}~${daily.tempMax}℃\n` +
+        `**月相：** ${daily.moonPhase}\n` +
+        `**风速：** ${daily.windSpeedNight}~${daily.windSpeedDay}km/h\n` +
+        `**风力：** ${daily.wind360Day}级\n` +
+        `**湿度：** ${daily.humidity}%\n` +
+        `**压强：** ${daily.pressure} hPa\n` +
         `**能见度：** ${daily.vis}/km\n` +
-        `**云量：** ${daily.cloud }%\n\n` +
+        `**降水量：** ${daily.precip} mm\n` +
+        `**紫外线：** ${daily.uvIndex}nm\n` +
+        `**预报日期：** ${formatTimestamp(new Date(daily.fxDate).getTime(),"yyyy年MM月dd日")}\n\n` +
         `**[查看详情](${wedata.fxLink})**`
-
 
     axios.post(curBot.webhook.url, {
             "msgtype": "markdown",

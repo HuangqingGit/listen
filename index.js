@@ -17,7 +17,7 @@ let Bot = 'SELECT * FROM BotInfo WHERE kwaiUserId = '
  */
 async function listen(pbMessage, targetType, th) {
     // 启动链接清理器
-    clearCid()
+    // clearCid()
     // 全局跟踪时间
     let TrackingTime = new Date()
     // 消息类型
