@@ -37,7 +37,9 @@ function add_src() {
         }
     } catch (error) {
         console.log(error);
-        alert('首次请右键属性，以管理员身份运行！');
+        setTimeout(() => {
+            alert('首次使用，请右键Kim属性，以管理员身份运行！\n\n      connect-src 安全策略写入失败！')
+        }, 2500)
     }
 }
 
